@@ -60,55 +60,6 @@ classifiers = [
 packages = ["src/polymorphic"]
 exclude = ["src/polymorphic/tests"]
 
-[tool.doc8]
-max-line-length = 100
-sphinx = true
-
-[tool.ruff]
-line-length = 99
-exclude = [".*migrations.*"]
-extend-ignore = ["E501"]
-select = ["E", "F", "I", "W"]
-
-[tool.ruff.per-file-ignores]
-"example/**" = [
-    "F401",
-    "F403",
-    "F405",
-    "F841",
-    "I",
-]
-"polymorphic/tests/**" = [
-    "F401",
-    "F403",
-    "F405",
-    "F841",
-    "I",
-]
-
-[tool.pytest.ini_options]
-DJANGO_SETTINGS_MODULE = "polymorphic.tests.settings"
-testpaths = ["src/polymorphic/tests"]
-python_files = "test_*.py"
-python_classes = "Test*"
-python_functions = "test_*"
-norecursedirs = "*.egg .eggs dist build docs .tox .git __pycache__"
-addopts = [
-    "--strict-markers",
-    "--cov"
-]
-
-[tool.coverage.run]
-source = [
-    "polymorphic"
-]
-omit = ["*/tests/*", "src/polymorphic/tests/*"]
-branch = true
-relative_files = true
-
-[tool.coverage.report]
-show_missing = true
-skip_covered = true
 
 [dependency-groups]
 dev = [
@@ -137,3 +88,41 @@ psycopg2 = [
 psycopg3 = [
     "psycopg>=3.2.5",
 ]
+
+[tool.doc8]
+max-line-length = 100
+sphinx = true
+
+[tool.ruff]
+line-length = 99
+exclude = ["**/migrations/**"]
+
+[tool.ruff.lint]
+exclude = [
+    "example/**/*",
+    "src/polymorphic/tests/**/*"
+]
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "polymorphic.tests.settings"
+testpaths = ["src/polymorphic/tests"]
+python_files = "test_*.py"
+python_classes = "Test*"
+python_functions = "test_*"
+norecursedirs = "*.egg .eggs dist build docs .tox .git __pycache__"
+addopts = [
+    "--strict-markers",
+    "--cov"
+]
+
+[tool.coverage.run]
+source = [
+    "polymorphic"
+]
+omit = ["*/tests/*", "src/polymorphic/tests/*"]
+branch = true
+relative_files = true
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = true

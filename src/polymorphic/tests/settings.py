@@ -6,14 +6,14 @@ rdbms = os.environ.get("RDBMS", "sqlite")
 
 if rdbms == "sqlite":
     DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': ':memory:',
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": ":memory:",
         },
-        'secondary': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': ':memory:',
-        }
+        "secondary": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": ":memory:",
+        },
     }
 elif rdbms == "postgres":
     DATABASES = {
@@ -32,7 +32,7 @@ elif rdbms == "postgres":
             "PASSWORD": os.environ.get("POSTGRES_PASSWORD", ""),
             "HOST": os.environ.get("POSTGRES_HOST", ""),
             "PORT": os.environ.get("POSTGRES_PORT", ""),
-        }
+        },
     }
 # elif rdbms == "mysql":  # pragma: no cover
 #     DATABASES = {

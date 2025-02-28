@@ -1,7 +1,7 @@
-import pytest
 import re
 import uuid
 
+import pytest
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.db.models import Case, Count, FilteredRelation, Q, When
@@ -56,6 +56,7 @@ from polymorphic.tests.models import (
     NonProxyChild,
     One2OneRelatingModel,
     One2OneRelatingModelDerived,
+    ParentLinkAndRelatedName,
     ParentModelWithManager,
     PlainA,
     PlainB,
@@ -81,7 +82,6 @@ from polymorphic.tests.models import (
     SubclassSelectorAbstractConcreteModel,
     SubclassSelectorProxyBaseModel,
     SubclassSelectorProxyConcreteModel,
-    ParentLinkAndRelatedName,
     UUIDArtProject,
     UUIDPlainA,
     UUIDPlainB,

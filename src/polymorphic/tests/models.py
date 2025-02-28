@@ -1,6 +1,5 @@
 import uuid
 
-import django
 from django.contrib.auth.models import Group
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
