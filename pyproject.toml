@@ -1,22 +1,71 @@
 [build-system]
-requires = [
-    "setuptools",
-    # TODO: look into using python-babel instead of requiring django at build time
-    "django>=3.2",  # for makemessages
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "django-polymorphic"
+version = "3.2.0"
+description = "Seamless polymorphic inheritance for Django models."
+requires-python = ">=3.8,<4.0"
+authors = [
+  {name = "Bert Constantin", email = "bert.constantin@gmx.de"},
+  {name = "Diederik van der Boor", email = "vdboor@edoburu.nl"},
+  {name = "Christopher Glass", email = "tribaal@ubuntu.com"},
 ]
+maintainers = [
+  {name = "Brian Kohan", email = "bckohan@gmail.com"}
+]
+license = "BSD-3-Clause"
+license-files = [ "LICENSE" ]
+repository = "https://github.com/jazzband/django-polymorphic"
+homepage = "https://django-polymorphic.rtfd.io"
+readme = "README.rst"
+keywords = [
+    "django", "polymorphic", "polymorphism", "django-admin", "django-orm", "django-formsets", "model"
+]
+dependencies = ["django>=3.2"]
+classifiers = [
+    "Environment :: Console",
+    "Framework :: Django",
+    "Operating System :: OS Independent",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Development Status :: 5 - Production/Stable",
+    "Framework :: Django :: 3.2",
+    "Framework :: Django :: 4.0",
+    "Framework :: Django :: 4.1",
+    "Framework :: Django :: 4.2",
+    "Framework :: Django :: 5.0",
+    "Framework :: Django :: 5.1",
+    "Framework :: Django :: 5.2",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: BSD License",
+    "Natural Language :: English",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+	"Topic :: Database",
+    "Topic :: Internet :: WWW/HTTP",
+    "Topic :: Internet :: WWW/HTTP :: Site Management",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Software Development :: Libraries :: Python Modules"
+]
+
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/polymorphic"]
+exclude = ["src/polymorphic/tests"]
+
 
 [tool.ruff]
 line-length = 99
-
-extend-ignore = [
-    "E501",
-]
-select = [
-    "E",
-    "F",
-    "I",
-    "W",
-]
+exclude = [".*migrations.*"]
+extend-ignore = ["E501"]
+select = ["E", "F", "I", "W"]
 
 [tool.ruff.per-file-ignores]
 "example/**" = [
@@ -36,3 +85,24 @@ select = [
 
 [tool.pytest.ini_options]
 DJANGO_SETTINGS_MODULE = "polymorphic_test_settings"
+
+[dependency-groups]
+dev = [
+    "pre-commit>=3.5.0",
+    "ruff>=0.9.8",
+    "tox>=4.24.1",
+    "tox-uv>=1.13.1",
+]
+docs = [
+    "django-extra-views>=0.15.0",
+    "doc8>=1.1.2",
+    "sphinx>=7.1.2",
+    "sphinx-rtd-theme>=3.0.2",
+    "sphinxcontrib-django>=2.5",
+]
+psycopg2 = [
+    "psycopg2>=2.9.10",
+]
+psycopg3 = [
+    "psycopg>=3.2.5",
+]
