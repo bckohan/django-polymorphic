@@ -1,12 +1,14 @@
 """
 Seamless Polymorphic Inheritance for Django Models
 
-Copyright:
-This code and affiliated files are (C) by Bert Constantin and individual contributors.
+This code and affiliated files are © by Bert Constantin and individual contributors.
 Please see LICENSE and AUTHORS for more information.
 """
 
-VERSION = "3.1.0"
+VERSION = (3, 2, 0)
 
-# version synonym for backwards compatibility
-__version__ = VERSION
+__title__ = "Django Polymorphic"
+__version__ = ".".join(str(i) for i in VERSION)
+__author__ = "Brian Kohan"
+__license__ = "BSD 3-Clause"
+__copyright__ = "Copyright 2013-2025 Bert Constantin et al."
