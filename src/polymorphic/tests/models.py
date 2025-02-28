@@ -73,7 +73,7 @@ class ModelShow3(ShowFieldTypeAndContent, PolymorphicModel):
 
 
 class ModelShow1_plain(PolymorphicModel):
-    field1 = models.CharField(max_length=10)
+    field1 = models.CharField(max_length=32)
 
 
 class ModelShow2_plain(ModelShow1_plain):
@@ -254,7 +254,7 @@ class BlogBase(ShowFieldTypeAndContent, PolymorphicModel):
 
 
 class BlogA(BlogBase):
-    info = models.CharField(max_length=10)
+    info = models.CharField(max_length=16)
 
 
 class BlogB(BlogBase):
@@ -263,12 +263,12 @@ class BlogB(BlogBase):
 
 class BlogEntry(ShowFieldTypeAndContent, PolymorphicModel):
     blog = models.ForeignKey(BlogA, on_delete=models.CASCADE)
-    text = models.CharField(max_length=10)
+    text = models.CharField(max_length=16)
 
 
 class BlogEntry_limit_choices_to(ShowFieldTypeAndContent, PolymorphicModel):
     blog = models.ForeignKey(BlogBase, on_delete=models.CASCADE)
-    text = models.CharField(max_length=10)
+    text = models.CharField(max_length=16)
 
 
 class ModelFieldNameTest(ShowFieldType, PolymorphicModel):
@@ -380,7 +380,7 @@ class RelatedNameClash(ShowFieldType, PolymorphicModel):
 # class with a parent_link to superclass, and a related_name back to subclass
 
 
-class TestParentLinkAndRelatedName(ModelShow1_plain):
+class ParentLinkAndRelatedName(ModelShow1_plain):
     superclass = models.OneToOneField(
         ModelShow1_plain,
         on_delete=models.CASCADE,
