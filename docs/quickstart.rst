@@ -17,7 +17,9 @@ The current release of *django-polymorphic* supports Django 2.2 - 4.0 and Python
 Making Your Models Polymorphic
 ------------------------------
 
-Use ``PolymorphicModel`` instead of Django's ``models.Model``, like so::
+Use ``PolymorphicModel`` instead of Django's ``models.Model``, like so:
+
+.. code-block:: python
 
     from polymorphic.models import PolymorphicModel
 
@@ -60,7 +62,10 @@ Use ``instance_of`` or ``not_instance_of`` for narrowing the result to specific 
 Polymorphic filtering: Get all projects where Mr. Turner is involved as an artist
 or supervisor (note the three underscores):
 
->>> Project.objects.filter(Q(ArtProject___artist='T. Turner') | Q(ResearchProject___supervisor='T. Turner'))
+>>> Project.objects.filter(
+        Q(ArtProject___artist='T. Turner') |
+        Q(ResearchProject___supervisor='T. Turner')
+    )
 [ <ArtProject:      id 2, topic "Painting with Tim", artist "T. Turner">,
   <ResearchProject: id 4, topic "Color Use in Late Cubism", supervisor "T. Turner"> ]
 

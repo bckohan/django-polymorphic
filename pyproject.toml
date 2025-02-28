@@ -60,6 +60,9 @@ classifiers = [
 packages = ["src/polymorphic"]
 exclude = ["src/polymorphic/tests"]
 
+[tool.doc8]
+max-line-length = 100
+sphinx = true
 
 [tool.ruff]
 line-length = 99
@@ -97,6 +100,7 @@ docs = [
     "django-extra-views>=0.15.0",
     "doc8>=1.1.2",
     "sphinx>=7.1.2",
+    "sphinx-autobuild>=2021.3.14",
     "sphinx-rtd-theme>=3.0.2",
     "sphinxcontrib-django>=2.5",
 ]
