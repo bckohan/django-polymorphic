@@ -8,7 +8,7 @@ def get_polymorphic_base_content_type(obj):
 
     See the django-guardian documentation for more information:
 
-    https://django-guardian.readthedocs.io/en/latest/configuration.html#guardian-get-content-type
+    https://django-guardian.readthedocs.io/en/latest/configuration
     """
     if hasattr(obj, "polymorphic_model_marker"):
         try:

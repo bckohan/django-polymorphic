@@ -179,8 +179,8 @@ htmlhelp_basename = "django-polymorphicdoc"
 
 
 intersphinx_mapping = {
-    "https://docs.djangoproject.com/en/stable": (
-        "https://docs.djangoproject.com/en/stable",
+    "django": (
+        "https://docs.djangoproject.com/en/stable/",
         "https://docs.djangoproject.com/en/stable/_objects",
     )
 }

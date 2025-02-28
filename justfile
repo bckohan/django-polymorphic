@@ -141,7 +141,7 @@ check-readme:
     @just run -m readme_renderer ./README.rst
 
 _check-readme-quiet:
-    @just check-readme --quiet
+    @just --quiet check-readme
 
 # sort the python imports
 sort-imports:
