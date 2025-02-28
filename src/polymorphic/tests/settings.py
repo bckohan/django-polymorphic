@@ -1,16 +1,90 @@
-import dj_database_url
+import os
 
 DEBUG = False
-DATABASES = {
-    "default": dj_database_url.config(
-        env="PRIMARY_DATABASE",
-        default="sqlite://:memory:",
-    ),
-    "secondary": dj_database_url.config(
-        env="SECONDARY_DATABASE",
-        default="sqlite://:memory:",
-    ),
-}
+
+rdbms = os.environ.get("RDBMS", "sqlite")
+
+if rdbms == "sqlite":
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': ':memory:',
+        },
+        'secondary': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': ':memory:',
+        }
+    }
+elif rdbms == "postgres":
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": os.environ.get("POSTGRES_DB", "default"),
+            "USER": os.environ.get("POSTGRES_USER", "postgres"),
+            "PASSWORD": os.environ.get("POSTGRES_PASSWORD", ""),
+            "HOST": os.environ.get("POSTGRES_HOST", ""),
+            "PORT": os.environ.get("POSTGRES_PORT", ""),
+        },
+        "secondary": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": os.environ.get("POSTGRES_DB", "secondary"),
+            "USER": os.environ.get("POSTGRES_USER", "postgres"),
+            "PASSWORD": os.environ.get("POSTGRES_PASSWORD", ""),
+            "HOST": os.environ.get("POSTGRES_HOST", ""),
+            "PORT": os.environ.get("POSTGRES_PORT", ""),
+        }
+    }
+# elif rdbms == "mysql":  # pragma: no cover
+#     DATABASES = {
+#         "default": {
+#             "ENGINE": "django.db.backends.mysql",
+#             "NAME": os.environ.get("MYSQL_DATABASE", "default"),
+#             "USER": os.environ.get("MYSQL_USER", "root"),
+#             "PASSWORD": os.environ.get("MYSQL_PASSWORD", "root"),
+#             "HOST": os.environ.get("MYSQL_HOST", "127.0.0.1"),
+#             "PORT": os.environ.get("MYSQL_PORT", "3306"),
+#         },
+#         "secondary": {
+#             "ENGINE": "django.db.backends.mysql",
+#             "NAME": os.environ.get("MYSQL_DATABASE", "secondary"),
+#             "USER": os.environ.get("MYSQL_USER", "root"),
+#             "PASSWORD": os.environ.get("MYSQL_PASSWORD", "root"),
+#             "HOST": os.environ.get("MYSQL_HOST", "127.0.0.1"),
+#             "PORT": os.environ.get("MYSQL_PORT", "3306"),
+#         }
+#     }
+# elif rdbms == "mariadb":  # pragma: no cover
+#     DATABASES = {
+#         "default": {
+#             "ENGINE": "django.db.backends.mysql",
+#             "NAME": os.environ.get("MARIADB_DATABASE", "default"),
+#             "USER": os.environ.get("MARIADB_USER", "root"),
+#             "PASSWORD": os.environ.get("MARIADB_PASSWORD", "root"),
+#             "HOST": os.environ.get("MARIADB_HOST", "127.0.0.1"),
+#             "PORT": os.environ.get("MARIADB_PORT", "3306"),
+#         },
+#         "secondary": {
+#             "ENGINE": "django.db.backends.mysql",
+#             "NAME": os.environ.get("MARIADB_DATABASE", "secondary"),
+#             "USER": os.environ.get("MARIADB_USER", "root"),
+#             "PASSWORD": os.environ.get("MARIADB_PASSWORD", "root"),
+#             "HOST": os.environ.get("MARIADB_HOST", "127.0.0.1"),
+#             "PORT": os.environ.get("MARIADB_PORT", "3306"),
+#         }
+#     }
+# elif rdbms == "oracle":  # pragma: no cover
+#     DATABASES = {
+#         "default": {
+#             "ENGINE": "django.db.backends.oracle",
+#             "NAME": f"{os.environ.get('ORACLE_HOST', 'localhost')}:"
+#             f"{os.environ.get('ORACLE_PORT', '1521')}"
+#             f"/{os.environ.get('ORACLE_DATABASE', 'XEPDB1')}",
+#             "USER": os.environ.get("ORACLE_USER", "system"),
+#             "PASSWORD": os.environ.get("ORACLE_PASSWORD", "password"),
+#         }
+#     }
+
+
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 INSTALLED_APPS = (
     "django.contrib.auth",
