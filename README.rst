@@ -8,7 +8,7 @@
           :target: https://pypi.python.org/pypi/django-polymorphic/
       - .. image:: https://img.shields.io/codecov/c/github/jazzband/django-polymorphic/master.svg
           :target: https://codecov.io/github/jazzband/django-polymorphic?branch=master
-      - .. image:: https://readthedocs.org/projects/django-polymorphic/badge/?version=stable
+      - .. image:: https://readthedocs.org/projects/django-polymorphic/badge/?version=latest
           :target: https://django-polymorphic.readthedocs.io/en/stable/
       - .. image:: https://jazzband.co/static/img/badge.svg
           :target: https://jazzband.co/
