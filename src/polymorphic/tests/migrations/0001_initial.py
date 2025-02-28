@@ -1174,7 +1174,7 @@ class Migration(migrations.Migration):
             bases=("tests.relationbase",),
         ),
         migrations.CreateModel(
-            name="TestParentLinkAndRelatedName",
+            name="ParentLinkAndRelatedName",
             fields=[
                 (
                     "superclass",
