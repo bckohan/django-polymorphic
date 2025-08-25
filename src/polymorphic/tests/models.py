@@ -279,12 +279,12 @@ class BlogB(BlogBase):
 
 class BlogEntry(ShowFieldTypeAndContent, PolymorphicModel):
     blog = models.ForeignKey(BlogA, on_delete=models.CASCADE)
-    text = models.CharField(max_length=10)
+    text = models.CharField(max_length=11)
 
 
 class BlogEntry_limit_choices_to(ShowFieldTypeAndContent, PolymorphicModel):
     blog = models.ForeignKey(BlogBase, on_delete=models.CASCADE)
-    text = models.CharField(max_length=10)
+    text = models.CharField(max_length=11)
 
 
 class ModelFieldNameTest(ShowFieldType, PolymorphicModel):
