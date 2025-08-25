@@ -179,6 +179,12 @@ test-lock +PACKAGES: _lock-python
 test *TESTS:
     @just run pytest --cov-append {{ TESTS }}
 
+test-db DB_CLIENT="dev":
+    # No Optional Dependency Unit Tests
+    # todo clean this up, rerunning a lot of tests
+    uv sync --group {{ DB_CLIENT }}
+    @just run pytest --cov-append
+
 # run the pre-commit checks
 precommit:
     @just run pre-commit
