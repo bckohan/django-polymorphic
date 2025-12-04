@@ -1234,3 +1234,51 @@ class PolymorphicTests(TransactionTestCase):
     def test_non_polymorphic_parent(self):
         obj = NonPolymorphicParent.objects.create()
         assert obj.delete()
+
+    def test_queryset_deletion(self):
+        Model2A.objects.all().delete()
+
+        for i in range(250):
+            Model2B.objects.create(field1=f"B1-{i}", field2=f"B2-{i}")
+        for i in range(1000):
+            Model2C.objects.create(
+                field1=f"C1-{i + 250}", field2=f"C2-{i + 250}", field3=f"C3-{i + 250}"
+            )
+        for i in range(2000):
+            Model2D.objects.create(
+                field1=f"D1-{i + 1250}",
+                field2=f"D2-{i + 1250}",
+                field3=f"D3-{i + 1250}",
+                field4=f"D4-{i + 1250}",
+            )
+
+            b, c, d = 0, 0, 0
+            for idx, obj in enumerate(Model2A.objects.order_by("pk")):
+                if isinstance(obj, Model2D):
+                    d += 1
+                    assert obj.field1 == f"D1-{idx}"
+                    assert obj.field2 == f"D2-{idx}"
+                    assert obj.field3 == f"D3-{idx}"
+                    assert obj.field4 == f"D4-{idx}"
+                elif isinstance(obj, Model2C):
+                    c += 1
+                    assert obj.field1 == f"C1-{idx}"
+                    assert obj.field2 == f"C2-{idx}"
+                    assert obj.field3 == f"C3-{idx}"
+                elif isinstance(obj, Model2B):
+                    b += 1
+                    assert obj.field1 == f"B1-{idx}"
+                    assert obj.field2 == f"B2-{idx}"
+                else:
+                    assert False, "Unexpected model type"
+            assert (b, c, d) == (250, 1000, 2000)
+
+        assert (
+            11500,
+            {
+                "tests.Model2D": 2000,
+                "tests.Model2C": 3000,
+                "tests.Model2B": 3250,
+                "tests.Model2A": 3250,
+            },
+        ) == Model2A.objects.all().delete()
