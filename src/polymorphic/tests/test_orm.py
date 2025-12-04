@@ -1252,26 +1252,26 @@ class PolymorphicTests(TransactionTestCase):
                 field4=f"D4-{i + 1250}",
             )
 
-            b, c, d = 0, 0, 0
-            for idx, obj in enumerate(Model2A.objects.order_by("pk")):
-                if isinstance(obj, Model2D):
-                    d += 1
-                    assert obj.field1 == f"D1-{idx}"
-                    assert obj.field2 == f"D2-{idx}"
-                    assert obj.field3 == f"D3-{idx}"
-                    assert obj.field4 == f"D4-{idx}"
-                elif isinstance(obj, Model2C):
-                    c += 1
-                    assert obj.field1 == f"C1-{idx}"
-                    assert obj.field2 == f"C2-{idx}"
-                    assert obj.field3 == f"C3-{idx}"
-                elif isinstance(obj, Model2B):
-                    b += 1
-                    assert obj.field1 == f"B1-{idx}"
-                    assert obj.field2 == f"B2-{idx}"
-                else:
-                    assert False, "Unexpected model type"
-            assert (b, c, d) == (250, 1000, 2000)
+        b, c, d = 0, 0, 0
+        for idx, obj in enumerate(Model2A.objects.order_by("pk")):
+            if isinstance(obj, Model2D):
+                d += 1
+                assert obj.field1 == f"D1-{idx}"
+                assert obj.field2 == f"D2-{idx}"
+                assert obj.field3 == f"D3-{idx}"
+                assert obj.field4 == f"D4-{idx}"
+            elif isinstance(obj, Model2C):
+                c += 1
+                assert obj.field1 == f"C1-{idx}"
+                assert obj.field2 == f"C2-{idx}"
+                assert obj.field3 == f"C3-{idx}"
+            elif isinstance(obj, Model2B):
+                b += 1
+                assert obj.field1 == f"B1-{idx}"
+                assert obj.field2 == f"B2-{idx}"
+            else:
+                assert False, "Unexpected model type"
+        assert (b, c, d) == (250, 1000, 2000)
 
         assert (
             11500,
