@@ -22,7 +22,7 @@ jobs:
   test:
     permissions:
       contents: read
-      id-token: write  # to allow codecov oidc upload
+      id-token: write # to allow codecov oidc upload
     uses: ./.github/workflows/test.yml
 
   build:
@@ -149,7 +149,7 @@ jobs:
           --repo "$GITHUB_REPOSITORY"
 
   # chrisglass owns this: https://test.pypi.org/project/django-polymorphic/
-  # publish-to-testpypi:  
+  # publish-to-testpypi:
   #   name: Publish to TestPyPI
   #   needs:
   #     - build
