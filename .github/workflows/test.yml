@@ -778,7 +778,6 @@ jobs:
           path: ${{ env.COVERAGE_FILE }}
 
   coverage-combine:
-    name: Combine Coverage and Upload to Codecov
     needs: [postgres, sqlite, mysql, mariadb, oracle, windows, macos]
     runs-on: ubuntu-latest
     permissions:
