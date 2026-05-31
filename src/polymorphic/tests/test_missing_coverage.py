@@ -321,28 +321,6 @@ class TestPolymorphicIteratorMaxChunk(TransactionTestCase):
             results = list(qs)
             assert len(results) >= 2
 
-    def test_max_chunk_zero_uses_default(self):
-        """Test the code path where max_query_params=0 → use Polymorphic_QuerySet_objects_per_request."""
-        from unittest.mock import patch, PropertyMock
-
-        import django.db.backends.base.features as features_module
-
-        Model2A.objects.create(field1="mq_zero_a")
-        Model2B.objects.create(field1="mq_zero_b", field2="B2")
-
-        qs = Model2A.objects.all()
-
-        # Patch the connection features to return 0 for max_query_params
-        with patch("django.db.connections") as mock_connections:
-            mock_features = type("MockFeatures", (), {"max_query_params": 0})()
-            mock_connection = type("MockConn", (), {"features": mock_features})()
-            mock_connections.__getitem__ = lambda self, key: mock_connection
-
-            # Can't easily use this - instead verify the existing behavior
-            # The default is 2000 - just verify it works
-            results = list(qs)
-            assert len(results) >= 2
-
 
 # ===========================================================================
 # query.py - non_polymorphic() False branch of issubclass check (lines 216->218)
@@ -1203,16 +1181,20 @@ class TestFormsetCTypeAsInt(TestCase):
 
 
 # ===========================================================================
-# formsets/models.py - model from queryset_data (line 255)
+# formsets/models.py - per-row model selection for an unbound formset
 # ===========================================================================
 
 
 class TestFormsetModelFromQuerysetData(TestCase):
-    """Test unbound formset where model comes from queryset_data."""
+    """Test that an unbound formset built from a mixed-type queryset selects the
+    correct child model for each row."""
 
     def test_model_from_queryset_data(self):
         """
-        Line 255: When no instance or initial, model comes from queryset_data[i].__class__.
+        Each initial form is bound to its queryset object's real concrete class
+        (the ``defaults["instance"]`` branch in ``_construct_form``), so a formset
+        over a mixed Model2A/Model2B queryset produces one correctly-typed form
+        per row.
         """
         obj_a = Model2A.objects.create(field1="qs_data_a")
         obj_b = Model2B.objects.create(field1="qs_data_b", field2="B2")
@@ -1234,10 +1216,9 @@ class TestFormsetModelFromQuerysetData(TestCase):
         forms = formset.forms
         # The form types come from the queryset_data items
         assert len(forms) == 2
-        # At least one form for each type
-        field1s = {form.instance.__class__.__name__ for form in forms if form.instance.pk}
-        # queryset_data drives the model for each form
-        assert len(forms) == 2
+        # queryset_data drives the model for each form: one Model2A and one Model2B
+        form_models = {form.instance.__class__ for form in forms if form.instance.pk}
+        assert form_models == {Model2A, Model2B}
 
 
 # ===========================================================================
@@ -1896,5 +1877,7 @@ class TestPolymorphicSerializerChildValidNoValidatedData(TestCase):
 
         with mock.patch.object(drf_serializers.Serializer, "is_valid", patched_is_valid):
             result = s.is_valid()
-            # Result depends on child validation (child is valid, so True)
-            # But _validated_data was deleted before the check, so branch 98->101 executes
+            # _validated_data was deleted before the check, so branch 98->101 executes:
+            # the child's _validated_data is NOT merged into the parent, but no
+            # AttributeError is raised and is_valid still returns True (parent + child valid).
+            assert result is True
