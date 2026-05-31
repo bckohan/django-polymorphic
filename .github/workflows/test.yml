@@ -50,7 +50,7 @@ jobs:
       fail-fast: false
       matrix:
         python-version: ['3.10', '3.11', '3.12', '3.13', '3.14']
-        postgres-version: ['12', '14@sha256:bbb8851608e3ff4901156bf6a4bf90735a9d44ae014c03811bfdb2f9c354b18b', 'latest']
+        postgres-version: ['12', '14', 'latest']
         psycopg-version: ['psycopg2', 'psycopg3']
         django-version:
           - 'dj42' # LTS April 2026
@@ -76,13 +76,6 @@ jobs:
           - postgres-version: '12'
             django-version: 'dj60'
 
-          - postgres-version: '14'
-            django-version: 'dj42'
-          - postgres-version: '14'
-            django-version: 'dj52'
-          - postgres-version: '14'
-            django-version: 'dj60'
-
           - postgres-version: 'latest'
             django-version: 'dj42'
 
@@ -96,6 +89,16 @@ jobs:
             psycopg-version: 'psycopg2'
           - python-version: '3.14'
             psycopg-version: 'psycopg2'
+
+        # pin each image to its digest (satisfies zizmor unpinned-images)
+        # while keeping postgres-version driving the matrix
+        include:
+          - postgres-version: '12'
+            postgres-image: 'postgres:12@sha256:2f2a8c2a7d10862e7fba2602e304523554f9df8244c632dafe2628ccb398fb5c'
+          - postgres-version: '14'
+            postgres-image: 'postgres:14@sha256:bbb8851608e3ff4901156bf6a4bf90735a9d44ae014c03811bfdb2f9c354b18b'
+          - postgres-version: 'latest'
+            postgres-image: 'postgres:latest@sha256:8ff36f3c66371cba71d20ceedccfc3de9669a68737607888c4ef0af93abe8e39'
 
     env:
       RDBMS: postgres
@@ -115,7 +118,7 @@ jobs:
       # Label used to access the service container
       postgres:
         # Docker Hub image
-        image: postgres:${{ matrix.postgres-version }}
+        image: ${{ matrix.postgres-image }}
         # Provide the password for postgres
         env:
           POSTGRES_PASSWORD: postgres
@@ -164,7 +167,7 @@ jobs:
       env:
         TEST_PYTHON: ${{ steps.sp.outputs.python-path }}
       run: |
-        just test-all --group "${{ matrix.psycopg-version }}" -p "$TEST_PYTHON" --group "$TEST_DJANGO_VERSION"
+        just test-all --group "$TEST_DATABASE_CLIENT_VERSION" -p "$TEST_PYTHON" --group "$TEST_DJANGO_VERSION"
     - name: Store coverage files
       uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
       with:
@@ -286,6 +289,14 @@ jobs:
           - python-version: '3.12'
             django-version: 'dj60'
 
+        # pin each image to its digest (satisfies zizmor unpinned-images)
+        # while keeping mysql-version driving the matrix
+        include:
+          - mysql-version: '8.0'
+            mysql-image: 'mysql:8.0@sha256:7dcddc01f13bab2f15cde676d44d01f61fc9f99fe7785e86196dfc07d358ae2b'
+          - mysql-version: 'latest'
+            mysql-image: 'mysql:latest@sha256:c11782aa2a96624c1efc121768641d96954faa136d6aa82751b032d8c426ffbc'
+
     env:
       RDBMS: mysql
       MYSQL_VERSION: ${{ matrix.mysql-version }}
@@ -298,7 +309,7 @@ jobs:
     services:
       mysql:
         # Docker Hub image
-        image: mysql:${{ matrix.mysql-version }}
+        image: ${{ matrix.mysql-image }}
         # Provide the password for mysql
         env:
           MYSQL_ROOT_PASSWORD: root
@@ -351,7 +362,7 @@ jobs:
         env:
           TEST_PYTHON: ${{ steps.sp.outputs.python-path }}
         run: |
-          just test-all --group "${{ matrix.mysqlclient-version }}" -p "$TEST_PYTHON" --group "$TEST_DJANGO_VERSION"
+          just test-all --group "$TEST_DATABASE_CLIENT_VERSION" -p "$TEST_PYTHON" --group "$TEST_DJANGO_VERSION"
       - name: Store coverage files
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
@@ -418,10 +429,18 @@ jobs:
           - mariadb-version: '10.4'
             mariadb-healthcheck: "healthcheck.sh --connect --innodb_initialized"
 
+        # pin each image to its digest (satisfies zizmor unpinned-images)
+        # while keeping mariadb-version driving the matrix
+        include:
+          - mariadb-version: '10.4'
+            mariadb-image: 'mariadb:10.4@sha256:22edfe1c78349f8cae88bbb5c2873b7e6c515be767c91c691308ce57445806f3'
+          - mariadb-version: 'latest'
+            mariadb-image: 'mariadb:latest@sha256:6a4c4bbf0447c2247801309513fcc0dd17c3f35390368139ce419387fdd1144d'
+
     services:
       mariadb:
         # Docker Hub image
-        image: mariadb:${{ matrix.mariadb-version }}
+        image: ${{ matrix.mariadb-image }}
         # Provide the password for mysql
         env:
           MYSQL_ROOT_PASSWORD: root
@@ -474,7 +493,7 @@ jobs:
         env:
           TEST_PYTHON: ${{ steps.sp.outputs.python-path }}
         run: |
-          just test-all --group "${{ matrix.mysqlclient-version }}" -p "$TEST_PYTHON" --group "$TEST_DJANGO_VERSION"
+          just test-all --group "$TEST_DATABASE_CLIENT_VERSION" -p "$TEST_PYTHON" --group "$TEST_DJANGO_VERSION"
       - name: Store coverage files
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
@@ -520,9 +539,17 @@ jobs:
           - python-version: '3.14'
             django-version: 'dj52'
 
+        # pin each image to its digest (satisfies zizmor unpinned-images)
+        # while keeping oracle-version driving the matrix
+        include:
+          - oracle-version: 'oracle-xe:21'
+            oracle-image: 'gvenzl/oracle-xe:21@sha256:c2682a4216b0fe65537912c4a049c7e5c15a85bb7c94bb8137d5f2d2eef60603'
+          - oracle-version: 'oracle-free:latest'
+            oracle-image: 'gvenzl/oracle-free:latest@sha256:e2763af84ecc345d48e4e3fe7999d0b7bb57885b6e0166051acd5f62e27eb605'
+
     services:
       oracle1:
-        image: gvenzl/${{ matrix.oracle-version }}  # zizmor: ignore[unpinned-images]
+        image: ${{ matrix.oracle-image }}
         env:
           ORACLE_PASSWORD: password
           ORACLE_DATABASE: test1
@@ -537,7 +564,7 @@ jobs:
           --health-retries 10
 
       oracle2:
-        image: gvenzl/${{ matrix.oracle-version }}  # zizmor: ignore[unpinned-images]
+        image: ${{ matrix.oracle-image }}
         env:
           ORACLE_PASSWORD: password
           ORACLE_DATABASE: test2
@@ -554,8 +581,8 @@ jobs:
     steps:
       - name: Set coverage file
         run: |
-          ORACLE_TAG=$(echo "${{ matrix.oracle-version }}" | cut -d':' -f2)
-          echo "COVERAGE_FILE=linux-py${{ matrix.python-version }}-${{ matrix.django-version }}-oracle${ORACLE_TAG}.coverage" >> $GITHUB_ENV
+          ORACLE_TAG=$(echo "$TEST_DATABASE_VERSION" | cut -d':' -f2)
+          echo "COVERAGE_FILE=linux-py${TEST_PYTHON_VERSION}-${TEST_DJANGO_VERSION}-oracle${ORACLE_TAG}.coverage" >> $GITHUB_ENV
       - name: Clear Tool cache
         if: ${{ github.event.inputs.clear_cache == 'true' }}
         run: sudo rm -rf /opt/hostedtoolcache
@@ -587,7 +614,7 @@ jobs:
         run: |
           sudo apt install alien libaio1t64
           sudo ln -s /usr/lib/x86_64-linux-gnu/libaio.so.1t64 /usr/lib/x86_64-linux-gnu/libaio.so.1
-          if [[ "${{ matrix.oracle-version }}" == oracle-xe* ]]; then
+          if [[ "$TEST_DATABASE_VERSION" == oracle-xe* ]]; then
             curl --output oracle-client.rpm https://download.oracle.com/otn_software/linux/instantclient/2116000/oracle-instantclient-basiclite-21.16.0.0.0-1.el8.x86_64.rpm
             sudo alien -i oracle-client.rpm
             sudo sh -c "echo /usr/lib/oracle/21/client64/lib/ > /etc/ld.so.conf.d/oracle.conf"
@@ -602,7 +629,7 @@ jobs:
         env:
           TEST_PYTHON: ${{ steps.sp.outputs.python-path }}
         run: |
-          if [[ "${{ matrix.oracle-version }}" == oracle-xe* ]]; then
+          if [[ "$TEST_DATABASE_VERSION" == oracle-xe* ]]; then
             just test-all --group cx_oracle -p "$TEST_PYTHON" --group "$TEST_DJANGO_VERSION"
           else
             just test-all --group oracledb -p "$TEST_PYTHON" --group "$TEST_DJANGO_VERSION"
